@@ -1,0 +1,37 @@
+{
+  "name": "@awesomeorganization/session-handler",
+  "description": "[ESM] The session handler for Node.js according to rfc6265",
+  "version": "0.1.0",
+  "exports": "./main.js",
+  "type": "module",
+  "repository": "github:awesomeorganization/session-handler",
+  "license": "MIT",
+  "author": {
+    "name": "sergeysedoy97"
+  },
+  "devDependencies": {
+    "@awesomeorganization/servers": "0.2.2",
+    "eslint-config-prettier": "8.1.0",
+    "eslint-plugin-node": "11.1.0",
+    "undici": "3.3.3"
+  },
+  "peerDependencies": {
+    "eslint": "7.22.0",
+    "prettier": "2.2.1"
+  },
+  "peerDependenciesMeta": {
+    "eslint": {
+      "optional": true
+    },
+    "prettier": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "cookie",
+    "http",
+    "rfc6265",
+    "session",
+    "state-management"
+  ]
+}
