@@ -17,7 +17,7 @@ export const parseCookie = ({ cookie }) => {
       .split(';')
       .map((iterator) => {
         const [name, value] = iterator.split('=')
-        if (value.startsWith('"') === true && value.endsWith('"') === true) {
+        if (value[0] === '"' && value[value.length - 1] === '"') {
           return [name, value.slice(1, -1)]
         }
         return [name, value]
@@ -67,10 +67,7 @@ export const sessionHandler = async (
       })
     })
   }
-  const createSession = async ({ request, response }) => {
-    if (request.aborted === true) {
-      return undefined
-    }
+  const createSession = async ({ response }) => {
     const session = {
       expiresAt: Date.now() + ttl,
       id: await generateId(),
@@ -90,10 +87,12 @@ export const sessionHandler = async (
     }
   }
   const handle = ({ request, response }) => {
+    if (request.aborted === true) {
+      return undefined
+    }
     const now = Date.now()
     if ('cookie' in request.headers === false) {
       return createSession({
-        request,
         response,
       })
     }
@@ -103,20 +102,19 @@ export const sessionHandler = async (
     const id = cookie.get(cookieName)
     if (id === undefined) {
       return createSession({
-        request,
         response,
       })
     }
     // DELETE EXPIRED SESSIONS
-    sessions.forEach(({ expiresAt, id }) => {
-      if (expiresAt <= now) {
-        sessions.delete(id)
+    for (const { expiresAt, id } of sessions.values()) {
+      if (expiresAt > now) {
+        continue
       }
-    })
+      sessions.delete(id)
+    }
     const session = sessions.get(id)
     if (session === undefined) {
       return createSession({
-        request,
         response,
       })
     }

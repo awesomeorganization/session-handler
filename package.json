@@ -1,7 +1,7 @@
 {
   "name": "@awesomeorganization/session-handler",
   "description": "[ESM] The session handler for Node.js according to rfc6265",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "exports": "./main.js",
   "type": "module",
   "repository": "github:awesomeorganization/session-handler",
@@ -16,7 +16,7 @@
     "undici": "3.3.3"
   },
   "peerDependencies": {
-    "eslint": "7.22.0",
+    "eslint": "7.23.0",
     "prettier": "2.2.1"
   },
   "peerDependenciesMeta": {
