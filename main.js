@@ -60,7 +60,7 @@ export const sessionHandler = async (
 ) => {
   const crypto = await import('crypto')
   const sessions = new Map()
-  const generateId = () => {
+  const generateSessionId = () => {
     return new Promise((resolve) => {
       crypto.randomBytes(16, (error, buffer) => {
         resolve(buffer.toString('hex'))
@@ -70,16 +70,16 @@ export const sessionHandler = async (
   const createSession = async ({ response }) => {
     const session = {
       expiresAt: Date.now() + ttl,
-      id: await generateId(),
+      sessionId: await generateSessionId(),
       storage: new Map(),
     }
-    sessions.set(session.id, session)
+    sessions.set(session.sessionId, session)
     response.setHeader(
       'Set-Cookie',
       setCookie({
         ...cookieOptions,
         name: cookieName,
-        value: session.id,
+        value: session.sessionId,
       })
     )
     return {
@@ -87,7 +87,7 @@ export const sessionHandler = async (
     }
   }
   const handle = ({ request, response }) => {
-    if (request.aborted === true) {
+    if (request.aborted === true || response.writableEnded === true) {
       return undefined
     }
     const now = Date.now()
@@ -99,27 +99,25 @@ export const sessionHandler = async (
     const cookie = parseCookie({
       cookie: request.headers.cookie,
     })
-    const id = cookie.get(cookieName)
-    if (id === undefined) {
+    const sessionId = cookie.get(cookieName)
+    if (sessionId === undefined) {
       return createSession({
         response,
       })
     }
-    // DELETE EXPIRED SESSIONS
-    for (const { expiresAt, id } of sessions.values()) {
+    for (const { expiresAt, sessionId } of sessions.values()) {
       if (expiresAt > now) {
         continue
       }
-      sessions.delete(id)
+      sessions.delete(sessionId)
     }
-    const session = sessions.get(id)
+    const session = sessions.get(sessionId)
     if (session === undefined) {
       return createSession({
         response,
       })
     }
-    // REFRESH
-    session.expiresAt = Date.now() + ttl
+    session.expiresAt = now + ttl
     return {
       ...session,
     }

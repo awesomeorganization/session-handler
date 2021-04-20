@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@awesomeorganization/servers": "0.2.2",
-    "@awesomeorganization/session-handler": "0.1.0"
+    "@awesomeorganization/servers": "1.0.0",
+    "@awesomeorganization/session-handler": ".."
   }
 }

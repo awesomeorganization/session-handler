@@ -11,13 +11,13 @@ const example = async () => {
       port: 3000,
     },
     async onRequest(request, response) {
-      const { id, storage } = await sessionMiddleware.handle({
+      const { sessionId, storage } = await sessionMiddleware.handle({
         request,
         response,
       })
       const counter = storage.get('counter') ?? 0
       storage.set('counter', counter + 1)
-      response.end(`Hi ${id}! you have visited this page ${counter} times`)
+      response.end(`Hi ${sessionId}! you have visited this page ${counter} times`)
     },
   })
   // TRY
